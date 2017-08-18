@@ -1,0 +1,23 @@
+version: "2.2"
+
+services:
+  template:
+    image: "scoobadog/template"
+    init: true
+    restart: "on-failure"
+    network_mode: "none"
+    cap_drop:
+      - "ALL"
+    cap_add:
+      - "CHOWN"
+      - "FOWNER"
+      - "SETGID"
+      - "SETUID"
+    tmpfs:
+      - "/run:rw,nodev,noexec,nosuid,size=16m"
+      - "/tmp:rw,nodev,noexec,nosuid,size=16m"
+    volumes:
+      - "data:/data:Z"
+
+volumes:
+  data:
