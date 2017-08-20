@@ -8,7 +8,7 @@ RUN \
 apk upgrade --no-cache && \
 apk add --no-cache \
 	su-exec && \
-mkdir -p "${VOLUME}"
+mkdir -m 0777 -p "${VOLUME}"
 
 VOLUME ["${VOLUME}"]
 WORKDIR "${VOLUME}"
