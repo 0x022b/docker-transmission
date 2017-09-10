@@ -3,11 +3,11 @@ user='minion'
 uid="${HOST_UID:-65534}"
 gid="${HOST_GID:-65534}"
 
-if [ "$(cat '/etc/group' | cut -d':' -f3 | grep -c "${gid}")" -eq 0 ]; then
+if ! '/usr/bin/getent' group "${gid}"; then
 	'/usr/sbin/addgroup' -g "${gid}" -S "${user}"
 fi
 
-if [ "$(cat '/etc/passwd' | cut -d':' -f3 | grep -c "${uid}")" -eq 0 ]; then
+if ! '/usr/bin/getent' passwd "${uid}"; then
 	'/usr/sbin/adduser' -h "/tmp/${user}" -g "${user}" -s '/sbin/nologin' \
 		-G "${user}" -SD -u "${uid}" "${user}"
 fi
