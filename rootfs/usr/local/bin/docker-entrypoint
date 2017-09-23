@@ -16,4 +16,17 @@ if [ "$1" == 'container-daemon' ]; then
 	set -- '/bin/sh'
 fi
 
+if [ -n "${CONTAINER_GATEWAY:+x}" ]; then
+	gateway=$('/usr/bin/getent' hosts "${CONTAINER_GATEWAY}")
+	if [ "$?" -ne "0" ]; then
+		echo "getent: Unknown host: ${CONTAINER_GATEWAY}"
+		exit 1
+	fi
+	gateway=$(echo "${gateway}" | '/usr/bin/awk' '{ print $1 }')
+
+	if ! '/sbin/ip' route replace default via "${gateway}"; then
+		exit 1
+	fi
+fi
+
 exec '/sbin/su-exec' "${uid}:${gid}" "$@"
