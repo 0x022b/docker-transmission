@@ -12,9 +12,6 @@ if ! '/usr/bin/getent' passwd "${uid}"; then
 		-G "${user}" -SD -u "${uid}" "${user}"
 fi
 
-if [ "$1" == 'container-daemon' ]; then
-	set -- '/bin/sh'
-fi
 
 if [ -n "${CONTAINER_GATEWAY:+x}" ]; then
 	gateway=$('/usr/bin/getent' hosts "${CONTAINER_GATEWAY}")
@@ -27,6 +24,10 @@ if [ -n "${CONTAINER_GATEWAY:+x}" ]; then
 	if ! '/sbin/ip' route replace default via "${gateway}"; then
 		exit 1
 	fi
+fi
+
+if [ "$1" == 'container-daemon' ]; then
+	set -- '/bin/sh'
 fi
 
 exec '/sbin/su-exec' "${uid}:${gid}" "$@"
