@@ -38,6 +38,12 @@ if [ -n "${CONTAINER_GATEWAY:+x}" ]; then
 	fi
 fi
 
+if [ -n "${ENABLE_FORWARDING:+x}" ]; then
+	'/bin/cat' \
+		'/etc/iptables/ipv4-forward' \
+	| '/sbin/iptables-restore' --noflush
+fi
+
 if [ "$1" == 'container-daemon' ]; then
 	set -- '/bin/sh'
 fi

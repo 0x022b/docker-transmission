@@ -17,6 +17,11 @@ environment variable. Its value can be either an IP address or a hostname.
 For to be able to change the gateway the container needs to have `NET_ADMIN`
 capabilities.
 
+### Connection forwarding
+
+Container can be configured to act as a router by defining a `ENABLE_FORWARDING`
+environment variable. Its value must be a non null value.
+
 ## License
 
 This project is licensed under the MIT License.
