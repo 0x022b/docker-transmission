@@ -3,6 +3,14 @@ user='minion'
 uid="${HOST_UID:-65534}"
 gid="${HOST_GID:-65534}"
 
+'/bin/cat' \
+	'/etc/iptables/default-policy' \
+| '/sbin/iptables-restore'
+
+'/bin/cat' \
+	'/etc/iptables/default-policy' \
+| '/sbin/ip6tables-restore'
+
 if ! '/usr/bin/getent' group "${gid}"; then
 	'/usr/sbin/addgroup' -g "${gid}" -S "${user}"
 fi
@@ -12,6 +20,10 @@ if ! '/usr/bin/getent' passwd "${uid}"; then
 		-G "${user}" -SD -u "${uid}" "${user}"
 fi
 
+'/bin/cat' \
+	'/etc/iptables/ipv4-default' \
+	'/etc/iptables/ipv4-custom' \
+| '/sbin/iptables-restore' --noflush
 
 if [ -n "${CONTAINER_GATEWAY:+x}" ]; then
 	gateway=$('/usr/bin/getent' hosts "${CONTAINER_GATEWAY}")

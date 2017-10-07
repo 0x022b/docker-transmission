@@ -11,6 +11,8 @@ RUN \
 apk upgrade --no-cache && \
 apk add --no-cache \
 	ca-certificates \
+	iptables \
+	ip6tables \
 	su-exec && \
 mkdir -m 0777 -p "${VOLUME}"
 
