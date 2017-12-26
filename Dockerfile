@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM alpine:3.7
 MAINTAINER Janne K <0x022b@gmail.com>
 
 HEALTHCHECK CMD nc -zw5 google.com 443 || exit 1
