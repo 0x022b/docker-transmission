@@ -7,9 +7,19 @@ gid="${HOST_GID:-65534}"
 	'/etc/iptables/default-policy' \
 | '/sbin/iptables-restore'
 
-'/bin/cat' \
-	'/etc/iptables/default-policy' \
-| '/sbin/ip6tables-restore'
+if [ "$?" -ne 0 ]; then
+	exit 1
+fi
+
+if [ $('/sbin/ip' -6 route list | '/usr/bin/wc' -l) -gt 0 ]; then
+	'/bin/cat' \
+		'/etc/iptables/default-policy' \
+	| '/sbin/ip6tables-restore'
+
+	if [ "$?" -ne 0 ]; then
+		exit 1
+	fi
+fi
 
 if ! '/usr/bin/getent' group "${gid}"; then
 	'/usr/sbin/addgroup' -g "${gid}" -S "${user}"
@@ -24,6 +34,10 @@ fi
 	'/etc/iptables/ipv4-default' \
 	'/etc/iptables/ipv4-custom' \
 | '/sbin/iptables-restore' --noflush
+
+if [ "$?" -ne 0 ]; then
+	exit 1
+fi
 
 if [ -n "${CONTAINER_GATEWAY:+x}" ]; then
 	gateway=$('/usr/bin/getent' hosts "${CONTAINER_GATEWAY}")
@@ -42,6 +56,10 @@ if [ -n "${ENABLE_FORWARDING:+x}" ]; then
 	'/bin/cat' \
 		'/etc/iptables/ipv4-forward' \
 	| '/sbin/iptables-restore' --noflush
+
+	if [ "$?" -ne 0 ]; then
+		exit 1
+	fi
 fi
 
 if [ "$1" == 'container-daemon' ]; then
