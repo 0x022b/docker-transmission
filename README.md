@@ -22,9 +22,16 @@ capabilities.
 Container can be configured to act as a router by defining a `ENABLE_FORWARDING`
 environment variable. Its value must be a non null value.
 
+## Logging
+
+Container is compatible with `docker logs` command although logging is disabled
+by default if the container is started with `docker-compose` command. To find
+out more about logging see the command [reference][docker-logs].
+
 ## License
 
 This project is licensed under the MIT License.
 
 [alpine]: https://alpinelinux.org/
 [docker]: https://www.docker.com/
+[docker-logs]: https://docs.docker.com/engine/reference/commandline/logs/
