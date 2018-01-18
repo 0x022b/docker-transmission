@@ -16,6 +16,8 @@ services:
       - "NET_RAW"
       - "SETGID"
       - "SETUID"
+    logging:
+      driver: "none"
     tmpfs:
       - "/run:rw,nodev,noexec,nosuid,size=16m"
       - "/tmp:rw,nodev,noexec,nosuid,size=16m"
