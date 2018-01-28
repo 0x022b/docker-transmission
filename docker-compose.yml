@@ -1,11 +1,10 @@
 version: "2.2"
 
 services:
-  template:
-    image: "0x022b/template"
+  transmission:
+    image: "0x022b/transmission"
     init: true
     restart: "on-failure"
-    network_mode: "none"
     cap_drop:
       - "ALL"
     cap_add:
@@ -23,6 +22,8 @@ services:
       - "/tmp:rw,nodev,noexec,nosuid,size=16m"
     volumes:
       - "data:/data:Z"
+      - "mnt:/mnt:Z"
 
 volumes:
   data:
+  mnt:

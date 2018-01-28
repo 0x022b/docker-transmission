@@ -13,7 +13,9 @@ apk add --no-cache \
 	ca-certificates \
 	iptables \
 	ip6tables \
-	su-exec && \
+	su-exec \
+	transmission-daemon && \
+deluser transmission && \
 mkdir -m 0777 -p "${VOLUME}"
 
 VOLUME ["${VOLUME}"]

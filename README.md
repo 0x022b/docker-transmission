@@ -1,6 +1,7 @@
-# docker-template
+# docker-transmission
 
-A minimal and secure [Alpine Linux][alpine] based [Docker][docker] image.
+A minimal and secure [Alpine Linux][alpine] based [Docker][docker] image with
+[Transmission][transmission].
 
 ## Configuration
 
@@ -34,4 +35,5 @@ This project is licensed under the MIT License.
 
 [alpine]: https://alpinelinux.org/
 [docker]: https://www.docker.com/
+[transmission]: https://transmissionbt.com/
 [docker-logs]: https://docs.docker.com/engine/reference/commandline/logs/

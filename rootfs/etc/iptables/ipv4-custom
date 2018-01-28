@@ -12,4 +12,9 @@
 # Accept outgoing TCP connections
 -A TCP-OUTPUT -p tcp -j ACCEPT
 
+# Accept connections to Transmission RPC and peer listening ports
+-A TCP-INPUT -p tcp -m tcp --dport 9091 -j ACCEPT
+-A TCP-INPUT -p tcp -m tcp --dport 51413 -j ACCEPT
+-A UDP-INPUT -p udp -m udp --dport 51413 -j ACCEPT
+
 COMMIT
