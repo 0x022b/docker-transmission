@@ -3,7 +3,7 @@ user='transmission'
 uid="${HOST_UID:-65534}"
 gid="${HOST_GID:-65534}"
 incomplete='/mnt/.incomplete'
-download='/mnt/download'
+download='/mnt/downloads'
 watch='/mnt/watch'
 
 '/bin/cat' \
