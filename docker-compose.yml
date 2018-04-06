@@ -17,6 +17,8 @@ services:
       - "SETUID"
     logging:
       driver: "none"
+    ports:
+      - "127.0.0.1:9091:9091"
     tmpfs:
       - "/run:rw,nodev,noexec,nosuid,size=16m"
       - "/tmp:rw,nodev,noexec,nosuid,size=16m"
