@@ -11,6 +11,14 @@ Host user and group can be mapped to a container by defining `HOST_UID` and
 `HOST_GID` environment variables. If the variables are left undefined the
 container will execute its command as `nobody:nobody`.
 
+### RPC request credentials
+
+To improve security Transmission is configured to use authenticated RPC
+requests. The credentials are defined using `RPC_USERNAME` and `RPC_PASSWORD`
+environment variables. If `RPC_USERNAME` is not defined, then a default username
+`transmission` is used. However, if `RPC_PASSWORD` environment variable is not
+defined, a random password is generated every time the container starts.
+
 ### Default gateway
 
 Container's default gateway can be changed by defining a `CONTAINER_GATEWAY`

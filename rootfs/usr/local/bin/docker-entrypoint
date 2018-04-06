@@ -2,6 +2,8 @@
 user='transmission'
 uid="${HOST_UID:-65534}"
 gid="${HOST_GID:-65534}"
+rpc_username="${RPC_USERNAME:-$user}"
+rpc_password="${RPC_PASSWORD:-cat /dev/urandom | tr -dc A-Za-z0-9 | head -c32}"
 incomplete='/mnt/.incomplete'
 download='/mnt/downloads'
 watch='/mnt/watch'
@@ -77,6 +79,7 @@ if [ "$1" == 'container-daemon' ]; then
 
 	set -- '/usr/bin/transmission-daemon' --foreground \
 		--allowed "${allowed}" --port 9091 --peerport 51413 \
+		--auth --username "${rpc_username}" --password "${rpc_password}" \
 		--no-portmap --config-dir '/data' \
 		--incomplete-dir "${incomplete}" \
 		--download-dir "${download}" \
