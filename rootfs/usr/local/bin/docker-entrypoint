@@ -21,11 +21,11 @@ if [ $('/sbin/ip' -6 route list | '/usr/bin/wc' -l) -gt 0 ]; then
 	fi
 fi
 
-if ! '/usr/bin/getent' group "${gid}"; then
+if ! '/usr/bin/getent' group "${gid}" > '/dev/null'; then
 	'/usr/sbin/addgroup' -g "${gid}" -S "${user}"
 fi
 
-if ! '/usr/bin/getent' passwd "${uid}"; then
+if ! '/usr/bin/getent' passwd "${uid}" > '/dev/null'; then
 	'/usr/sbin/adduser' -h "/tmp/${user}" -g "${user}" -s '/sbin/nologin' \
 		-G "${user}" -SD -u "${uid}" "${user}"
 fi
