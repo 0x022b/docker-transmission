@@ -63,6 +63,10 @@ if [ -n "${ENABLE_FORWARDING:+x}" ]; then
 fi
 
 if [ "$1" == 'container-daemon' ]; then
+	run="/run/${user}"
+	'/bin/mkdir' "${run}"
+	'/bin/chown' "${uid}:${gid}" "${run}"
+
 	set -- '/bin/sh'
 fi
 
