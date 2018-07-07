@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM alpine:3.8
 LABEL maintainer="Janne K <0x022b@gmail.com>"
 
 HEALTHCHECK CMD nc -zw5 google.com 443 || exit 1
