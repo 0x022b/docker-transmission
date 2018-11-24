@@ -2,14 +2,19 @@
 user='minion'
 uid="${HOST_UID:-$(shuf -i 1000-65533 -n 1)}"
 gid="${HOST_GID:-$uid}"
+home="/run/user/${uid}"
+
+'/bin/mkdir' -p "${home}"
 
 if ! '/usr/bin/getent' group "${gid}" > '/dev/null'; then
     '/usr/sbin/addgroup' -g "${gid}" -S "${user}"
 fi
 
 if ! '/usr/bin/getent' passwd "${uid}" > '/dev/null'; then
-    '/usr/sbin/adduser' -h "/tmp/${user}" -g "${user}" -s '/sbin/nologin' \
-        -G "${user}" -SD -u "${uid}" "${user}"
+    '/usr/sbin/adduser' -h "${home}" -s '/sbin/nologin' \
+        -g "${user}" -G "${user}" -SD -u "${uid}" "${user}"
+else
+    '/bin/chown' "${uid}:${gid}" "${home}"
 fi
 
 if [ -f '/proc/net/route' ]; then
@@ -37,10 +42,6 @@ if [ -f '/proc/net/ipv6_route' ]; then
 fi
 
 if [ "$1" == 'container-daemon' ]; then
-    run="/run/${user}"
-    '/bin/mkdir' "${run}"
-    '/bin/chown' "${uid}:${gid}" "${run}"
-
     set -- '/bin/sh'
 fi
 
