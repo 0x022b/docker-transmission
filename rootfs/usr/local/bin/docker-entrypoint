@@ -1,7 +1,7 @@
 #!/bin/sh
 user='minion'
-uid="${HOST_UID:-65534}"
-gid="${HOST_GID:-65534}"
+uid="${HOST_UID:-$(shuf -i 1000-65533 -n 1)}"
+gid="${HOST_GID:-$uid}"
 
 '/bin/cat' \
     '/etc/iptables/default-policy' \
