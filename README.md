@@ -10,18 +10,6 @@ Host user and group can be mapped to a container by defining `HOST_UID` and
 `HOST_GID` environment variables. If the variables are left undefined the
 container will execute its command as `nobody:nobody`.
 
-### Default gateway
-
-Container's default gateway can be changed by defining a `CONTAINER_GATEWAY`
-environment variable. Its value can be either an IP address or a hostname.
-For to be able to change the gateway the container needs to have `NET_ADMIN`
-capabilities.
-
-### Connection forwarding
-
-Container can be configured to act as a router by defining a `ENABLE_FORWARDING`
-environment variable. Its value must be a non null value.
-
 ## Logging
 
 Container is compatible with `docker logs` command although logging is disabled

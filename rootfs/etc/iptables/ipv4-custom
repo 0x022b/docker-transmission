@@ -1,15 +1,3 @@
 *filter
 
-# Accept incoming ICMP echo requests
--A ICMP-INPUT -p icmp --icmp-type echo-request -j ACCEPT
-
-# Accept outgoing ICMP echo requests
--A ICMP-OUTPUT -p icmp --icmp-type echo-request -j ACCEPT
-
-# Accept outgoing UDP connections
--A UDP-OUTPUT -p udp -j ACCEPT
-
-# Accept outgoing TCP connections
--A TCP-OUTPUT -p tcp -j ACCEPT
-
 COMMIT

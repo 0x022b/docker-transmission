@@ -3,24 +3,6 @@ user='minion'
 uid="${HOST_UID:-$(shuf -i 1000-65533 -n 1)}"
 gid="${HOST_GID:-$uid}"
 
-'/bin/cat' \
-    '/etc/iptables/default-policy' \
-| '/sbin/iptables-restore'
-
-if [ "$?" -ne 0 ]; then
-    exit 1
-fi
-
-if [ $('/sbin/ip' -6 route list | '/usr/bin/wc' -l) -gt 0 ]; then
-    '/bin/cat' \
-        '/etc/iptables/default-policy' \
-    | '/sbin/ip6tables-restore'
-
-    if [ "$?" -ne 0 ]; then
-        exit 1
-    fi
-fi
-
 if ! '/usr/bin/getent' group "${gid}" > '/dev/null'; then
     '/usr/sbin/addgroup' -g "${gid}" -S "${user}"
 fi
@@ -30,35 +12,27 @@ if ! '/usr/bin/getent' passwd "${uid}" > '/dev/null'; then
         -G "${user}" -SD -u "${uid}" "${user}"
 fi
 
-'/bin/cat' \
-    '/etc/iptables/ipv4-default' \
-    '/etc/iptables/ipv4-custom' \
-| '/sbin/iptables-restore' --noflush
+if [ -f '/proc/net/route' ]; then
+    if ! '/sbin/iptables-save' | '/bin/grep' -qE '^\:ICMP\-'; then
+        if ! '/sbin/iptables-restore' '/etc/iptables/default-policy'; then
+            exit 1
+        fi
 
-if [ "$?" -ne 0 ]; then
-    exit 1
-fi
+        if ! '/sbin/iptables-restore' -n '/etc/iptables/ipv4-default'; then
+            exit 1
+        fi
 
-if [ -n "${CONTAINER_GATEWAY:+x}" ]; then
-    gateway=$('/usr/bin/getent' hosts "${CONTAINER_GATEWAY}")
-    if [ "$?" -ne "0" ]; then
-        echo "getent: Unknown host: ${CONTAINER_GATEWAY}"
-        exit 1
-    fi
-    gateway=$(echo "${gateway}" | '/usr/bin/awk' '{ print $1 }')
-
-    if ! '/sbin/ip' route replace default via "${gateway}"; then
-        exit 1
+        if ! '/sbin/iptables-restore' -n '/etc/iptables/ipv4-custom'; then
+            exit 1
+        fi
     fi
 fi
 
-if [ -n "${ENABLE_FORWARDING:+x}" ]; then
-    '/bin/cat' \
-        '/etc/iptables/ipv4-forward' \
-    | '/sbin/iptables-restore' --noflush
-
-    if [ "$?" -ne 0 ]; then
-        exit 1
+if [ -f '/proc/net/ipv6_route' ]; then
+    if ! '/sbin/ip6tables-save' | '/bin/grep' -qE '^\-'; then
+        if ! '/sbin/ip6tables-restore' '/etc/iptables/default-policy'; then
+            exit 1
+        fi
     fi
 fi
 
