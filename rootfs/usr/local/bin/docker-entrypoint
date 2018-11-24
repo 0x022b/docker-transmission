@@ -4,70 +4,70 @@ uid="${HOST_UID:-65534}"
 gid="${HOST_GID:-65534}"
 
 '/bin/cat' \
-	'/etc/iptables/default-policy' \
+    '/etc/iptables/default-policy' \
 | '/sbin/iptables-restore'
 
 if [ "$?" -ne 0 ]; then
-	exit 1
+    exit 1
 fi
 
 if [ $('/sbin/ip' -6 route list | '/usr/bin/wc' -l) -gt 0 ]; then
-	'/bin/cat' \
-		'/etc/iptables/default-policy' \
-	| '/sbin/ip6tables-restore'
+    '/bin/cat' \
+        '/etc/iptables/default-policy' \
+    | '/sbin/ip6tables-restore'
 
-	if [ "$?" -ne 0 ]; then
-		exit 1
-	fi
+    if [ "$?" -ne 0 ]; then
+        exit 1
+    fi
 fi
 
 if ! '/usr/bin/getent' group "${gid}" > '/dev/null'; then
-	'/usr/sbin/addgroup' -g "${gid}" -S "${user}"
+    '/usr/sbin/addgroup' -g "${gid}" -S "${user}"
 fi
 
 if ! '/usr/bin/getent' passwd "${uid}" > '/dev/null'; then
-	'/usr/sbin/adduser' -h "/tmp/${user}" -g "${user}" -s '/sbin/nologin' \
-		-G "${user}" -SD -u "${uid}" "${user}"
+    '/usr/sbin/adduser' -h "/tmp/${user}" -g "${user}" -s '/sbin/nologin' \
+        -G "${user}" -SD -u "${uid}" "${user}"
 fi
 
 '/bin/cat' \
-	'/etc/iptables/ipv4-default' \
-	'/etc/iptables/ipv4-custom' \
+    '/etc/iptables/ipv4-default' \
+    '/etc/iptables/ipv4-custom' \
 | '/sbin/iptables-restore' --noflush
 
 if [ "$?" -ne 0 ]; then
-	exit 1
+    exit 1
 fi
 
 if [ -n "${CONTAINER_GATEWAY:+x}" ]; then
-	gateway=$('/usr/bin/getent' hosts "${CONTAINER_GATEWAY}")
-	if [ "$?" -ne "0" ]; then
-		echo "getent: Unknown host: ${CONTAINER_GATEWAY}"
-		exit 1
-	fi
-	gateway=$(echo "${gateway}" | '/usr/bin/awk' '{ print $1 }')
+    gateway=$('/usr/bin/getent' hosts "${CONTAINER_GATEWAY}")
+    if [ "$?" -ne "0" ]; then
+        echo "getent: Unknown host: ${CONTAINER_GATEWAY}"
+        exit 1
+    fi
+    gateway=$(echo "${gateway}" | '/usr/bin/awk' '{ print $1 }')
 
-	if ! '/sbin/ip' route replace default via "${gateway}"; then
-		exit 1
-	fi
+    if ! '/sbin/ip' route replace default via "${gateway}"; then
+        exit 1
+    fi
 fi
 
 if [ -n "${ENABLE_FORWARDING:+x}" ]; then
-	'/bin/cat' \
-		'/etc/iptables/ipv4-forward' \
-	| '/sbin/iptables-restore' --noflush
+    '/bin/cat' \
+        '/etc/iptables/ipv4-forward' \
+    | '/sbin/iptables-restore' --noflush
 
-	if [ "$?" -ne 0 ]; then
-		exit 1
-	fi
+    if [ "$?" -ne 0 ]; then
+        exit 1
+    fi
 fi
 
 if [ "$1" == 'container-daemon' ]; then
-	run="/run/${user}"
-	'/bin/mkdir' "${run}"
-	'/bin/chown' "${uid}:${gid}" "${run}"
+    run="/run/${user}"
+    '/bin/mkdir' "${run}"
+    '/bin/chown' "${uid}:${gid}" "${run}"
 
-	set -- '/bin/sh'
+    set -- '/bin/sh'
 fi
 
 exec '/sbin/su-exec' "${uid}:${gid}" "$@"
