@@ -2,27 +2,27 @@ version: "2.2"
 
 services:
   template:
-    image: "0x022b/template"
+    image: 0x022b/template
     init: true
-    restart: "on-failure"
-    network_mode: "none"
+    restart: on-failure
+    network_mode: none
     cap_drop:
-      - "ALL"
+      - ALL
     cap_add:
-      - "CHOWN"
-      - "FOWNER"
-      - "KILL"
-      - "NET_ADMIN"
-      - "NET_RAW"
-      - "SETGID"
-      - "SETUID"
+      - CHOWN
+      - FOWNER
+      - KILL
+      - NET_ADMIN
+      - NET_RAW
+      - SETGID
+      - SETUID
     logging:
-      driver: "none"
+      driver: none
     tmpfs:
-      - "/run:rw,nodev,noexec,nosuid,size=16m"
-      - "/tmp:rw,nodev,noexec,nosuid,size=16m"
+      - /run:rw,nodev,noexec,nosuid,size=16m
+      - /tmp:rw,nodev,noexec,nosuid,size=16m
     volumes:
-      - "data:/data:Z"
+      - data:/data:Z
 
 volumes:
   data:
