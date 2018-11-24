@@ -22,7 +22,7 @@ services:
       - /run:rw,nodev,noexec,nosuid,size=16m
       - /tmp:rw,nodev,noexec,nosuid,size=16m
     volumes:
-      - data:/data:Z
+      - app:/app:Z
 
 volumes:
-  data:
+  app:

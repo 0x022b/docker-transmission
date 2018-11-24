@@ -3,8 +3,7 @@ LABEL maintainer="Janne K <0x022b@gmail.com>"
 
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["container-daemon"]
-
-ARG VOLUME=/data
+VOLUME ["/app"]
 
 RUN \
 apk upgrade --no-cache && \
@@ -12,10 +11,6 @@ apk add --no-cache \
     ca-certificates \
     iptables \
     ip6tables \
-    su-exec && \
-mkdir -m 0777 -p "${VOLUME}"
-
-VOLUME ["${VOLUME}"]
-WORKDIR "${VOLUME}"
+    su-exec
 
 COPY rootfs/ /
