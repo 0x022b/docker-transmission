@@ -1,24 +1,18 @@
 FROM alpine:3.8
 LABEL maintainer="Janne K <0x022b@gmail.com>"
 
-HEALTHCHECK CMD nc -zw5 google.com 443 || exit 1
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["container-daemon"]
-
-ARG VOLUME=/data
+VOLUME ["/app", "/data"]
 
 RUN \
 apk upgrade --no-cache && \
 apk add --no-cache \
-	ca-certificates \
-	iptables \
-	ip6tables \
-	su-exec \
-	transmission-daemon && \
-deluser transmission && \
-mkdir -m 0777 -p "${VOLUME}"
-
-VOLUME ["${VOLUME}"]
-WORKDIR "${VOLUME}"
+    ca-certificates \
+    iptables \
+    ip6tables \
+    su-exec \
+    transmission-daemon && \
+deluser transmission
 
 COPY rootfs/ /

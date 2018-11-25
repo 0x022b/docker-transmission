@@ -1,93 +1,70 @@
 #!/bin/sh
 user='transmission'
-uid="${HOST_UID:-65534}"
-gid="${HOST_GID:-65534}"
-rpc_username="${RPC_USERNAME:-$user}"
-rpc_password="${RPC_PASSWORD:-cat /dev/urandom | tr -dc A-Za-z0-9 | head -c32}"
-incomplete='/mnt/.incomplete'
-download='/mnt/downloads'
-watch='/mnt/watch'
+uid="${HOST_UID:-$(shuf -i 1000-65533 -n 1)}"
+gid="${HOST_GID:-$uid}"
+home="/run/user/${uid}"
 
-'/bin/cat' \
-	'/etc/iptables/default-policy' \
-| '/sbin/iptables-restore'
-
-if [ "$?" -ne 0 ]; then
-	exit 1
-fi
-
-if [ $('/sbin/ip' -6 route list | '/usr/bin/wc' -l) -gt 0 ]; then
-	'/bin/cat' \
-		'/etc/iptables/default-policy' \
-	| '/sbin/ip6tables-restore'
-
-	if [ "$?" -ne 0 ]; then
-		exit 1
-	fi
-fi
+'/bin/mkdir' -p "${home}"
 
 if ! '/usr/bin/getent' group "${gid}" > '/dev/null'; then
-	'/usr/sbin/addgroup' -g "${gid}" -S "${user}"
+    '/usr/sbin/addgroup' -g "${gid}" -S "${user}"
 fi
 
 if ! '/usr/bin/getent' passwd "${uid}" > '/dev/null'; then
-	'/usr/sbin/adduser' -h "/tmp/${user}" -g "${user}" -s '/sbin/nologin' \
-		-G "${user}" -SD -u "${uid}" "${user}"
+    '/usr/sbin/adduser' -h "${home}" -s '/sbin/nologin' \
+        -g "${user}" -G "${user}" -SD -u "${uid}" "${user}"
+else
+    '/bin/chown' "${uid}:${gid}" "${home}"
 fi
 
-'/bin/cat' \
-	'/etc/iptables/ipv4-default' \
-	'/etc/iptables/ipv4-custom' \
-| '/sbin/iptables-restore' --noflush
-
-if [ "$?" -ne 0 ]; then
-	exit 1
+if ! '/bin/chown' -R "${uid}:${gid}" '/app'; then
+    exit 1
 fi
 
-if [ -n "${CONTAINER_GATEWAY:+x}" ]; then
-	gateway=$('/usr/bin/getent' hosts "${CONTAINER_GATEWAY}")
-	if [ "$?" -ne "0" ]; then
-		echo "getent: Unknown host: ${CONTAINER_GATEWAY}"
-		exit 1
-	fi
-	gateway=$(echo "${gateway}" | '/usr/bin/awk' '{ print $1 }')
+if [ -f '/proc/net/route' ]; then
+    if ! '/sbin/iptables-save' | '/bin/grep' -qE '^\:ICMP\-'; then
+        if ! '/sbin/iptables-restore' '/etc/iptables/default-policy'; then
+            exit 1
+        fi
 
-	if ! '/sbin/ip' route replace default via "${gateway}"; then
-		exit 1
-	fi
+        if ! '/sbin/iptables-restore' -n '/etc/iptables/ipv4-default'; then
+            exit 1
+        fi
+    fi
+
+    if ! '/sbin/iptables-restore' -n '/etc/iptables/ipv4-custom'; then
+        exit 1
+    fi
 fi
 
-if [ -n "${ENABLE_FORWARDING:+x}" ]; then
-	'/bin/cat' \
-		'/etc/iptables/ipv4-forward' \
-	| '/sbin/iptables-restore' --noflush
-
-	if [ "$?" -ne 0 ]; then
-		exit 1
-	fi
+if [ -f '/proc/net/ipv6_route' ]; then
+    if ! '/sbin/ip6tables-save' | '/bin/grep' -qE '^\-'; then
+        if ! '/sbin/ip6tables-restore' '/etc/iptables/default-policy'; then
+            exit 1
+        fi
+    fi
 fi
 
 if [ "$1" == 'container-daemon' ]; then
-	run="/run/${user}"
-	'/bin/mkdir' "${run}"
-	'/bin/chown' "${uid}:${gid}" "${run}"
+    rpc_username="${RPC_USERNAME:-$user}"
+    rpc_password="${RPC_PASSWORD:-$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c32)}"
+    incomplete='/data/.incomplete'
 
-	allowed='127.0.0.1'
-	subnet=$(ip route show default 0.0.0.0/0 | awk '{ print $3 }' | cut -d . -f 1-3)
-	if [ -n "${subnet:+x}" ]; then
-		allowed=$(printf '%s,%s.*' "${allowed}" "${subnet}")
-	fi
+    '/bin/mkdir' -p "${incomplete}"
+    '/bin/chown' -R "${uid}:${gid}" "${incomplete}"
 
-	mkdir -p "${incomplete}" "${download}" "${watch}"
-	chown -R "${uid}:${gid}" "${incomplete}" "${download}" "${watch}"
+    allowed='127.0.0.1'
+    subnet=$(ip route show default 0.0.0.0/0 | awk '{ print $3 }' | cut -d . -f 1-3)
+    if [ -n "${subnet:+x}" ]; then
+        allowed=$(printf '%s,%s.*' "${allowed}" "${subnet}")
+    fi
 
-	set -- '/usr/bin/transmission-daemon' --foreground \
-		--allowed "${allowed}" --port 9091 --peerport 51413 \
-		--auth --username "${rpc_username}" --password "${rpc_password}" \
-		--no-portmap --config-dir '/data' \
-		--incomplete-dir "${incomplete}" \
-		--download-dir "${download}" \
-		--watch-dir "${watch}"
+    set -- '/usr/bin/transmission-daemon' --foreground \
+        --allowed "${allowed}" --port 9091 --peerport 51413 \
+        --auth --username "${rpc_username}" --password "${rpc_password}" \
+        --no-portmap --config-dir '/app' \
+        --incomplete-dir "${incomplete}" \
+        --download-dir '/data'
 fi
 
 exec '/sbin/su-exec' "${uid}:${gid}" "$@"

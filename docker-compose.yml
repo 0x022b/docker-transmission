@@ -1,31 +1,31 @@
-version: "2.2"
+version: '2.2'
 
 services:
   transmission:
-    image: "0x022b/transmission"
+    image: 0x022b/transmission
     init: true
-    restart: "on-failure"
+    restart: on-failure
     cap_drop:
-      - "ALL"
+      - ALL
     cap_add:
-      - "CHOWN"
-      - "FOWNER"
-      - "KILL"
-      - "NET_ADMIN"
-      - "NET_RAW"
-      - "SETGID"
-      - "SETUID"
+      - CHOWN
+      - FOWNER
+      - KILL
+      - NET_ADMIN
+      - NET_RAW
+      - SETGID
+      - SETUID
     logging:
-      driver: "none"
+      driver: none
     ports:
-      - "127.0.0.1:9091:9091"
+      - 127.0.0.1:9091:9091
     tmpfs:
-      - "/run:rw,nodev,noexec,nosuid,size=16m"
-      - "/tmp:rw,nodev,noexec,nosuid,size=16m"
+      - /run:rw,nodev,noexec,nosuid,size=16m
+      - /tmp:rw,nodev,noexec,nosuid,size=16m
     volumes:
-      - "data:/data:Z"
-      - "mnt:/mnt:Z"
+      - app:/app:Z
+      - data:/data:Z
 
 volumes:
+  app:
   data:
-  mnt:
