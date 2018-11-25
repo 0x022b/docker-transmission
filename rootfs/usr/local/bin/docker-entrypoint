@@ -30,10 +30,10 @@ if [ -f '/proc/net/route' ]; then
         if ! '/sbin/iptables-restore' -n '/etc/iptables/ipv4-default'; then
             exit 1
         fi
+    fi
 
-        if ! '/sbin/iptables-restore' -n '/etc/iptables/ipv4-custom'; then
-            exit 1
-        fi
+    if ! '/sbin/iptables-restore' -n '/etc/iptables/ipv4-custom'; then
+        exit 1
     fi
 fi
 
