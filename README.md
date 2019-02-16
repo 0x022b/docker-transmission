@@ -1,7 +1,7 @@
 # docker-transmission
 
 A minimal and secure [Alpine Linux][alpine] based [Docker][docker] image with
-[Transmission][transmission].
+[Transmission][transmission] BitTorrent client.
 
 ## Configuration
 
