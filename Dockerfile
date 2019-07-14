@@ -5,6 +5,8 @@ ENTRYPOINT ["docker-entrypoint"]
 CMD ["container-daemon"]
 VOLUME ["/app", "/data"]
 
+EXPOSE 9091/tcp
+
 RUN \
 apk upgrade --no-cache && \
 apk add --no-cache \
