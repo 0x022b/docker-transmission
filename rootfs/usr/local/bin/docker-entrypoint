@@ -1,4 +1,8 @@
 #!/bin/sh
+if [ -n "${DEBUG}" ]; then
+    set -x
+fi
+
 user='minion'
 uid="${HOST_UID:-$(shuf -i 10000-65533 -n 1)}"
 gid="${HOST_GID:-$uid}"

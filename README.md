@@ -16,6 +16,11 @@ Container is compatible with `docker logs` command although logging is disabled
 by default if the container is started with `docker-compose` command. To find
 out more about logging see the command [reference][docker-logs].
 
+### Debug log
+
+To print out a trace of commands executed by `docker-entrypoint` script,
+set `DEBUG` environment variable to any non-null value.
+
 ## License
 
 This project is licensed under the MIT License.
