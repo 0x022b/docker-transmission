@@ -2,6 +2,7 @@
 if [ -n "${DEBUG}" ]; then
     set -x
 fi
+set -euo pipefail
 
 user='minion'
 uid="${HOST_UID:-$(shuf -i 10000-65533 -n 1)}"
