@@ -10,7 +10,6 @@ apk upgrade --no-cache && \
 apk add --no-cache \
     ca-certificates \
     iptables \
-    ip6tables \
-    su-exec
+    ip6tables
 
 COPY rootfs/ /
