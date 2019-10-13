@@ -22,31 +22,20 @@ else
     '/bin/chown' "${uid}:${gid}" "${home}"
 fi
 
-if ! '/bin/chown' -R "${uid}:${gid}" '/app'; then
-    exit 1
-fi
+'/bin/chown' -R "${uid}:${gid}" '/app'
 
 if '/sbin/ip' -4 route | '/bin/grep' -q $; then
-    if ! '/sbin/iptables-save' | '/bin/grep' -qE '^\:ICMP\-'; then
-        if ! '/sbin/iptables-restore' '/etc/iptables/default-policy'; then
-            exit 1
-        fi
-
-        if ! '/sbin/iptables-restore' -n '/etc/iptables/ipv4-default'; then
-            exit 1
-        fi
+    if ! '/sbin/iptables-save' | '/bin/grep' -q $; then
+        '/sbin/iptables-restore' '/etc/iptables/default-policy'
+        '/sbin/iptables-restore' -n '/etc/iptables/ipv4-default'
     fi
 
-    if ! '/sbin/iptables-restore' -n '/etc/iptables/ipv4-custom'; then
-        exit 1
-    fi
+    '/sbin/iptables-restore' -n '/etc/iptables/ipv4-custom'
 fi
 
 if '/sbin/ip' -6 route | '/bin/grep' -q $; then
-    if ! '/sbin/ip6tables-save' | '/bin/grep' -qE '^\-'; then
-        if ! '/sbin/ip6tables-restore' '/etc/iptables/default-policy'; then
-            exit 1
-        fi
+    if ! '/sbin/ip6tables-save' | '/bin/grep' -q $; then
+        '/sbin/ip6tables-restore' '/etc/iptables/default-policy'
     fi
 fi
 
