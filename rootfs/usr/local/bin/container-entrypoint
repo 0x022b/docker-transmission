@@ -39,7 +39,7 @@ if [ -n "$('/sbin/ip' -6 route | '/usr/bin/head' -c 1)" ]; then
     fi
 fi
 
-if [ "$1" == 'container-daemon' ]; then
+if [ "$1" = 'container-daemon' ]; then
     set -- '/bin/sh'
 fi
 
