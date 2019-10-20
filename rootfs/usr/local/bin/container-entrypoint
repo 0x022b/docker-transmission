@@ -24,8 +24,8 @@ fi
 
 '/bin/chown' -R "${uid}:${gid}" '/app'
 
-if '/sbin/ip' -4 route | '/bin/grep' -q $; then
-    if ! '/sbin/iptables-save' | '/bin/grep' -q $; then
+if [ -n "$('/sbin/ip' -4 route | '/usr/bin/head' -c 1)" ]; then
+    if [ -z "$('/sbin/iptables-save' | '/usr/bin/head' -c 1)" ]; then
         '/sbin/iptables-restore' '/etc/iptables/default-policy'
         '/sbin/iptables-restore' -n '/etc/iptables/ipv4-default'
     fi
@@ -33,8 +33,8 @@ if '/sbin/ip' -4 route | '/bin/grep' -q $; then
     '/sbin/iptables-restore' -n '/etc/iptables/ipv4-custom'
 fi
 
-if '/sbin/ip' -6 route | '/bin/grep' -q $; then
-    if ! '/sbin/ip6tables-save' | '/bin/grep' -q $; then
+if [ -n "$('/sbin/ip' -6 route | '/usr/bin/head' -c 1)" ]; then
+    if [ -z "$('/sbin/ip6tables-save' | '/usr/bin/head' -c 1)" ]; then
         '/sbin/ip6tables-restore' '/etc/iptables/default-policy'
     fi
 fi
