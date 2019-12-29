@@ -1,7 +1,7 @@
 FROM alpine:3.10
 LABEL maintainer="Janne K <0x022b@gmail.com>"
 
-ENTRYPOINT ["/sbin/tini", "--", "container-entrypoint"]
+ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/container-entrypoint"]
 CMD ["container-daemon"]
 VOLUME ["/app"]
 
