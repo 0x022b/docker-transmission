@@ -3,7 +3,6 @@ LABEL maintainer="Janne K <0x022b@gmail.com>"
 
 ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/container-entrypoint"]
 CMD ["container-daemon"]
-VOLUME ["/app"]
 
 RUN \
 apk upgrade --no-cache && \
@@ -13,5 +12,9 @@ apk add --no-cache \
     ip6tables \
     su-exec \
     tini
+
+VOLUME ["/app"]
+
+# TODO: Add instructions to specialise the image
 
 COPY rootfs/ /
