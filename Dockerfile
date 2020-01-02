@@ -1,7 +1,7 @@
 FROM alpine:3.11
 LABEL maintainer="Janne K <0x022b@gmail.com>"
 
-ENTRYPOINT ["docker-entrypoint"]
+ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/container-entrypoint"]
 CMD ["container-daemon"]
 VOLUME ["/app", "/data"]
 
@@ -14,6 +14,7 @@ apk add --no-cache \
     iptables \
     ip6tables \
     su-exec \
+    tini \
     transmission-daemon && \
 deluser transmission
 
