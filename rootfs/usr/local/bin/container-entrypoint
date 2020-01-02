@@ -48,7 +48,7 @@ if [ -n "$(ip -6 route | head -c 1)" ]; then
 fi
 
 if [ "$1" = 'container-daemon' ]; then
-    rpc_username="${RPC_USERNAME:-$user}"
+    rpc_username="${RPC_USERNAME:-transmission}"
     rpc_password="${RPC_PASSWORD:-$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c32)}"
     incomplete='/data/.incomplete'
 
