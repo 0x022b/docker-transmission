@@ -3,7 +3,6 @@ version: '2.2'
 services:
   template:
     image: 0x022b/template
-    init: true
     restart: on-failure
     network_mode: none
     cap_drop:
