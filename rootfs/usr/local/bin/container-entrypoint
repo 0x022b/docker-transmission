@@ -35,7 +35,6 @@ if [ "$1" = 'container-daemon' ]; then
     incomplete='/data/.incomplete'
 
     mkdir -p "${incomplete}"
-    chown -R "${uid}:${gid}" "${incomplete}"
 
     set -- transmission-daemon --foreground \
         --allowed "${allowed}" --port 9091 --peerport 51413 \
