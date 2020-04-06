@@ -1,8 +1,4 @@
-*filter
-
 # Accept connections to Transmission RPC and peer listening ports
--A TCP-INPUT -i eth+ -p tcp -m tcp --dport 9091 -j ACCEPT
--A TCP-INPUT -i tun+ -p tcp -m tcp --dport 51413 -j ACCEPT
--A UDP-INPUT -i tun+ -p udp -m udp --dport 51413 -j ACCEPT
-
-COMMIT
+-A TCP-INPUT -i {IFACE} -p tcp -m tcp --dport 9091 -j ACCEPT
+-A TCP-INPUT -i tun0 -p tcp -m tcp --dport 51413 -j ACCEPT
+-A UDP-INPUT -i tun0 -p udp -m udp --dport 51413 -j ACCEPT

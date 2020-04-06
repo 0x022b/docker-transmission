@@ -3,7 +3,6 @@ version: '2.2'
 services:
   transmission:
     image: 0x022b/transmission
-    init: true
     restart: on-failure
     cap_drop:
       - ALL
