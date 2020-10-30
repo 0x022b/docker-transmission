@@ -11,7 +11,7 @@ readonly iface="${IFACE:-$(ip -4 route show 0/0 | awk '{ print $5 }')}"
 
 user='minion'
 uid="${HOST_UID:-$(shuf -i 10000-65533 -n 1)}"
-gid="${HOST_GID:-$uid}"
+gid="${HOST_GID:-${uid}}"
 home="/run/user/${uid}"
 
 mkdir -p "${home}"
