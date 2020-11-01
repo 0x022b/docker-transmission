@@ -4,7 +4,8 @@
 ![Docker Image Version](https://img.shields.io/docker/v/0x022b/transmission?sort=semver&style=flat-square)
 ![Docker Image Size](https://img.shields.io/docker/image-size/0x022b/transmission?sort=semver&style=flat-square)
 
-Minimal and secure [Alpine Linux][alpine] based [Docker][docker] image.
+Minimal and secure [Alpine Linux][alpine] based [Docker][docker] image with
+[Transmission][transmission] BitTorrent client.
 
 ## Security
 
