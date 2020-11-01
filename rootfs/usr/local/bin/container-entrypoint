@@ -34,7 +34,7 @@ if [ "$1" = 'container-daemon' ]; then
     subnet="$(ip -4 route show 0/0 | awk '{ sub(/\d+$/, "*", $3); print $3 }')"
     allowed="$(printf '127.0.0.1,%s' "${subnet}")"
     rpc_username="${RPC_USERNAME:-transmission}"
-    rpc_password="${RPC_PASSWORD:-$(tr -dc 'a-zA-Z0-9' < '/dev/urandom' | head -c 32)}"
+    rpc_password="${RPC_PASSWORD:-$(dd if='/dev/urandom' bs=1 count=64 2> '/dev/null' | base64 | tr -d '\n' | head -c 32)}"
     incomplete='/data/.incomplete'
 
     mkdir -p "${incomplete}"
