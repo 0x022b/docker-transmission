@@ -12,7 +12,9 @@ apk add --no-cache \
     iptables \
     ip6tables \
     su-exec \
-    tini
+    tini \
+    tzdata && \
+ln -s /usr/share/zoneinfo/Universal /etc/localtime
 
 VOLUME ["/app"]
 
